@@ -43,7 +43,7 @@ IMG_VHD=$(curl -s $CF_EP/$EXP_CONTAINER -H "X-Auth-Token: $TOKEN")
 IMP_TASKID=`curl -s "https://$EXP_DC.images.api.rackspacecloud.com/v2/$CUSTOMERID/tasks" -X POST \
 -d '{"type": "import", "input": {"image_properties": "'"$IMAGENAME"'", "import_from": "'$IMG_VHD'"}}' \
 -H "X-Auth-Token: $TOKEN" -H "Content-Type: application/json" | python -mjson.tool | grep [i]d | grep -v "$IMAGEID"  | cut -d '"' -f4`
-
+echo "The import task ID is '$IMP_TASKID'"
 ####### This section is a function get's the import status - then  reports back once it's complete
 getIMPprogress() {
   IMP_POLL=$(curl https://$EXP_DC.images.api.rackspacecloud.com/v2/$CUSTOMERID/tasks/$IMP_TASKID -X GET \
