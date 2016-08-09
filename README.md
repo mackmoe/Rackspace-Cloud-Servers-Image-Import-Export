@@ -5,7 +5,7 @@ Example of it being Ran:
 
 ($:~) ./image-imp-and-exp.sh
 
-> Please bear in mind that the containers for import/export must already exist and be empty in the source and destination regions in order for this script to run successfully
+Please bear in mind that the containers for import/export must already exist and be empty in the source and destination regions in order for this script to run successfully
 
 Enter your mycloud username:
 
@@ -48,3 +48,4 @@ Image export is: processing
 Image export is: processing
 
 [... snip ...]
+
