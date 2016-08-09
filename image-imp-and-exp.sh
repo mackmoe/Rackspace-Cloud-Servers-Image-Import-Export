@@ -21,6 +21,7 @@ TOKEN=`curl -s https://identity.api.rackspacecloud.com/v2.0/tokens -X POST \
 EXP_TASKID=`curl -s "https://$EXP_DC.images.api.rackspacecloud.com/v2/$CUSTOMERID/tasks" -X POST \
 -d '{"type": "export", "input": {"image_uuid": "'"$IMAGEID"'", "receiving_swift_container": "'$EXP_CONTAINER'"}}' \
 -H "X-Auth-Token: $TOKEN" -H "Content-Type: application/json" | python -mjson.tool | grep [i]d | grep -v "$IMAGEID"  | cut -d '"' -f4`
+echo "The export task ID is '$EXP_TASKID'"
 
 ####### This section is a function get's the export status
 getEXPprogress() {
@@ -35,8 +36,8 @@ while [[ $EXP_STATUS != "success" ]]; do
 done
 
 ####### This section calls the Cloud Files API, asks for the vhd file and places it into a variable
-CF_EP=$(curl -s https://identity.api.rackspacecloud.com/v2.0/tokens -X POST -d '{ "auth":{"RAX-KSKEY:apiKeyCredentials": { "username":"'$USERNAME'", "apiKey": "'$APIKEY'" }} }' -H "Content-type: application/json" | python -mjson.tool | sed -n '/object-store:default/{n;p;}' | sed -e 's/^.*"id": "\(.*\)",/\1/' | cut -d '"' -f4)
-IMG_VHD=$(curl -s https://storage101.$EXP_DC.clouddrive.com/v1/$CF_EP/$EXP_CONTAINER -H "X-Auth-Token: $TOKEN")
+CF_EP=$(curl -s https://identity.api.rackspacecloud.com/v2.0/tokens -X POST -d '{"auth":{"RAX-KSKEY:apiKeyCredentials":{"username":"mackmoe210", "apiKey":"0620342ba8624859ab9e3467ed6b923b"}}}' -H "Content-Type: application/json" | python -m json.tool | grep -A27 '"type": "object-store"' | egrep -i "region|publicURL" | cut -d '"' -f4 | grep -i -B1 $EXP_DC | sed -n '/https/p')
+IMG_VHD=$(curl -s $CF_EP/$EXP_CONTAINER -H "X-Auth-Token: $TOKEN")
 
 ####### This section requests the Glance API to import the cloud server image to the specified container and stores the task id
 IMP_TASKID=`curl -s "https://$EXP_DC.images.api.rackspacecloud.com/v2/$CUSTOMERID/tasks" -X POST \
