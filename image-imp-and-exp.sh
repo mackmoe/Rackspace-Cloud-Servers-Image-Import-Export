@@ -36,15 +36,16 @@ while [[ $EXP_STATUS != success ]]; do
   getEXPprogress
   sleep 60
 done
+echo "Image Export process complete! Now Begining the Image Import process"
 
 ####### This section calls the Cloud Files API, asks for the vhd file and places it into a variable
 CF_EP=$(curl -s https://identity.api.rackspacecloud.com/v2.0/tokens -X POST -d '{"auth":{"RAX-KSKEY:apiKeyCredentials":{"username":"'$USERNAME'", "apiKey":"'$APIKEY'"}}}' -H "Content-Type: application/json" | python -m json.tool |grep -A30 '"serviceCatalog"' | egrep -i "region|publicURL" | cut -d '"' -f4 | grep -i -B1 "$EXP_DC" | sed -n '/https/p')
-IMG_VHD=$(curl -s $CF_EP/$EXP_CONTAINER/$IMAGEID.vhd -H "X-Auth-Token: $TOKEN")
+IMG_VHD=$(curl -s $CF_EP/$EXP_CONTAINER -H "X-Auth-Token: $TOKEN")
 
 ####### This section requests the Glance API to import the cloud server image to the specified container and stores the task id
 IMP_TASKID=`curl -s "https://$EXP_DC.images.api.rackspacecloud.com/v2/$CUSTOMERID/tasks" -X POST \
--d '{"type": "import", "input": {"image_properties": "'"$IMAGENAME"'", "import_from": "'$IMG_VHD'"}}' \
--H "X-Auth-Token: $TOKEN" -H "Content-Type: application/json" | python -mjson.tool | grep [i]d | grep -v "$IMAGEID"  | cut -d '"' -f4`
+-d '{"type": "import", "input": {"image_properties": "'"$IMAGENAME"'", "import_from": "'$IMG_VHD/$IMAGEID.vhd'"}}' \
+-H "X-Auth-Token: $TOKEN" -H "Content-Type: application/json"`
 echo "The import task ID is $IMP_TASKID"
 
 ####### This section is a function get's the import status - then  reports back once it's complete
@@ -59,5 +60,5 @@ while [[ $IMP_STATUS != success ]]; do
   echo "Image export is: $IMP_STATUS"
   getIMPprogress
   sleep 60
-  echo "Image import complete! The image can now be used to build a server in the new region.";
 done
+echo "Image import complete! The image can now be used to build a server in the new region."
