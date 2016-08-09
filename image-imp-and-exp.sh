@@ -35,7 +35,8 @@ while [[ $EXP_STATUS != "success" ]]; do
 done
 
 ####### This section calls the Cloud Files API, asks for the vhd file and places it into a variable
-
+CF_EP=$(curl -s https://identity.api.rackspacecloud.com/v2.0/tokens -X POST -d '{ "auth":{"RAX-KSKEY:apiKeyCredentials": { "username":"'$USERNAME'", "apiKey": "'$APIKEY'" }} }' -H "Content-type: application/json" | python -mjson.tool | sed -n '/object-store:default/{n;p;}' | sed -e 's/^.*"id": "\(.*\)",/\1/' | cut -d '"' -f4)
+IMG_VHD=$(curl -s https://storage101.$EXP_DC.clouddrive.com/v1/$CF_EP/$EXP_CONTAINER -H "X-Auth-Token: $TOKEN")
 
 ####### This section requests the Glance API to import the cloud server image to the specified container and stores the task id
 IMP_TASKID=`curl -s "https://$EXP_DC.images.api.rackspacecloud.com/v2/$CUSTOMERID/tasks" -X POST \
