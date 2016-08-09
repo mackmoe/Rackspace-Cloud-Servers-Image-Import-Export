@@ -35,8 +35,7 @@ while [[ $EXP_STATUS != "success" ]]; do
 done
 
 ####### This section calls the Cloud Files API, asks for the vhd file and places it into a variable
-#IMG_VHD=$(curl -s https://storage101.$EXP_DC.clouddrive.com/v1/MossoCloudFS_900a5d53-8642-4307-bf6f-3a122ce3f207/$EXP_CONTAINER -H "X-Auth-Token: $TOKEN")
-IMG_VHD=$(curl -s https://storage101.$EXP_DC.clouddrive.com/v1/MossoCloudFS_7b6b9c8d-ffbc-4a00-914a-947ebdbc1b57/$EXP_CONTAINER -H "X-Auth-Token: $TOKEN")
+
 
 ####### This section requests the Glance API to import the cloud server image to the specified container and stores the task id
 IMP_TASKID=`curl -s "https://$EXP_DC.images.api.rackspacecloud.com/v2/$CUSTOMERID/tasks" -X POST \
