@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "Please bear in mind that the containers for import/export must already exist in the source and destination regions in order for this script to run successfully"
+echo "Please bear in mind that the containers for import/export must already exist and be empty in the source and destination regions in order for this script to run successfully"
 echo ""
 sleep 5
 ###### This section asks for the $vars
