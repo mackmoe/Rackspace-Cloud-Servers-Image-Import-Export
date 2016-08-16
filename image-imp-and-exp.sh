@@ -57,7 +57,7 @@ getIMPprogress() {
 ####### while loop to poll import until complete
 getIMPprogress
 while [[ $IMP_STATUS != success ]]; do
-  echo "Image export is: $IMP_STATUS"
+  echo "Image import is: $IMP_STATUS"
   getIMPprogress
   sleep 60
 done
